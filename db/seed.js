@@ -1,4 +1,4 @@
-const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, getPostsByUser, getUserById } = require("./index");
+const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, updatePost, getPostsByUser, getUserById } = require("./index");
 
 async function createInitialUsers() {
   try {
@@ -34,11 +34,37 @@ async function createInitialUsers() {
   }
 }
 
+async function createInitialPosts(){
+  try {
+    const [albert, sandra, glamgal] = await getAllUsers();
+
+    await createPost({
+      authorId: albert.id,
+      title: "First Post",
+      content: "This is my first post. I hope I love writing blogs as much as I love writing them."
+    });
+
+    await createPost({
+      authorId: sandra.id,
+      title: "Review",
+      content: "I didn't care for Albert's first post.  It was oddly phrased."
+    });
+
+    await createPost({
+      authorId: glamgal.id,
+      title: "First post by glamgal",
+      content: "This post is about glam stuff"
+    });
+
+
+  } catch (error) { throw error;}
+}
+
 async function testDB() {
   try {
     console.log("Starting to test database...");
 
-    console.log("calling getAllUsers");
+    console.log("Calling getAllUsers");
     const users = await getAllUsers();
     console.log("Result:", users);
 
@@ -49,12 +75,28 @@ async function testDB() {
     });
     console.log("Result:", updateUserResult);
 
+    console.log("Calling getAllPosts");
+    const posts = await getAllPosts();
+    console.log("Result:", posts);
+
+    console.log("Calling updatePost on posts[0]");
+    const updatePostResult = await updatePost(posts[0].id, {
+      title: "New Title",
+      content: "Updated Content"
+    });
+    console.log("Result:", updatePostResult);
+
+    console.log("Calling getUserById with 1");
+    const albert = await getUserById(1);
+    console.log("Result:", albert);
+
     console.log("Finished database tests!");
   } catch (error) {
-    console.error("Error testing database!");
+    console.log("Error during testDB");
     throw error;
   }
 }
+
 
 async function dropTables() {
   try {
@@ -85,6 +127,7 @@ async function createTables() {
         id SERIAL PRIMARY KEY,
         "authorId" INTEGER REFERENCES users(id) NOT NULL,
         title VARCHAR(255) NOT NULL,
+        content TEXT NOT NULL,
         active BOOLEAN DEFAULT true
     );`
     );
@@ -103,6 +146,7 @@ async function rebuildDB() {
     await dropTables();
     await createTables();
     await createInitialUsers();
+    await createInitialPosts();
   } catch (error) {
     throw error;
   }
