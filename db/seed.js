@@ -1,4 +1,4 @@
-const { client, getAllUsers, createUser, updateUser } = require("./index");
+const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, getPostsByUser } = require("./index");
 
 async function createInitialUsers() {
   try {
@@ -59,7 +59,7 @@ async function testDB() {
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
-    await client.query(`DROP TABLE IF EXISTS users;`);
+    await client.query(`DROP TABLE IF EXISTS posts; DROP TABLE IF EXISTS users;`);
 
     console.log("Finished dropping tables!");
   } catch (error) {
@@ -80,6 +80,14 @@ async function createTables() {
           location VARCHAR(255) NOT NULL,
           active BOOLEAN DEFAULT true);`
     );
+    
+    await client.query(`CREATE TABLE posts(
+        id SERIAL PRIMARY KEY,
+        "authorId" INTEGER REFERENCES users(id) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        active BOOLEAN DEFAULT true
+    );`
+    );
 
     console.log("Finished building tables!");
   } catch (error) {
@@ -99,8 +107,12 @@ async function rebuildDB() {
     throw error;
   }
 }
+console.log('QWEFQWEFQWEGQWG')
+
 
 rebuildDB()
   .then(testDB)
   .catch(console.error)
   .finally(() => client.end());
+
+ 
