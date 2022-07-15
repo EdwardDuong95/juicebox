@@ -1,4 +1,4 @@
-const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, getPostsByUser } = require("./index");
+const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, getPostsByUser, getUserById } = require("./index");
 
 async function createInitialUsers() {
   try {
@@ -107,7 +107,7 @@ async function rebuildDB() {
     throw error;
   }
 }
-console.log('QWEFQWEFQWEGQWG')
+
 
 
 rebuildDB()
