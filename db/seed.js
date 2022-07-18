@@ -1,4 +1,4 @@
-const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, updatePost, getPostsByUser, getUserById } = require("./index");
+const { client, getAllUsers, createUser, updateUser, createPost, getAllPosts, updatePost, getPostsByUser, getUserById, createInitialTags} = require("./index");
 
 async function createInitialUsers() {
   try {
@@ -37,7 +37,6 @@ async function createInitialUsers() {
 async function createInitialPosts(){
   try {
     const [albert, sandra, glamgal] = await getAllUsers();
-    console.log(albert,"ALBERTALBERTALBERTALBERTALBERTALBERTALBERT", sandra)
     await createPost({
       "authorId": albert.id,
       "title": "First Post",
@@ -143,8 +142,9 @@ async function createTables() {
     );
 
     await client.query(`CREATE TABLE post_tags(
-      "postId" INTEGER UNIQUE REFERENCES posts(id),
-      "tagId" INTEGER UNIQUE REFERENCES tags(id)
+      "postId" INTEGER REFERENCES posts(id),
+      "tagId" INTEGER REFERENCES tags(id),
+      UNIQUE ("postId", "tagId")
 
     );`
     );
@@ -164,7 +164,9 @@ async function rebuildDB() {
     await createTables();
     await createInitialUsers();
     await createInitialPosts();
+    await createInitialTags();
   } catch (error) {
+    console.log("Error during rebuildDB")
     throw error;
   }
 }
