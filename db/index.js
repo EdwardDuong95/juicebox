@@ -56,7 +56,7 @@ async function updateUser(id, fields = {}) {
 async function createPost({ authorId, title, content }) {
   try {
     const { rows } = await client.query(
-      `INSERT INTO users('authorId', title, content)
+      `INSERT INTO posts("authorId", title, content)
            VALUES ($1, $2, $3)  
            RETURNING *;`,
       [authorId, title, content]
@@ -70,7 +70,10 @@ async function createPost({ authorId, title, content }) {
 
 async function updatePost(id, { title, content, active }) {
   try {
-    const setString = `'title'=$1, 'content'=$2, 'active'=$3`;
+    if (active === null || active === undefined) {
+      active = true;
+    }
+    const setString = `"title"=$1, "content"=$2, "active"=$3`;
 
     const { rows } = await client.query(
       `
@@ -100,36 +103,40 @@ async function getAllPosts() {
 }
 
 async function getPostsByUser(userId) {
-    try {
-        const { rows } = await client.query(`
+  try {
+    const { rows } = await client.query(`
         SELECT * FROM posts
-        WHERE "authorId"=${ userId };`);  
-        
-        return rows;
-    }   catch (error) {
-        throw error;
-    }
+        WHERE "authorId"=${userId};`);
+    return rows;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getUserById(userId) {
-    try{
-        const userQueryResult = await client.query(`SELECT * FROM users WHERE id=${ userId };`);
-        if (userQueryResult.rows.length) {
-            const user = queryResult.rows[0];
-        } else {return null;}
-
-      return {
-          "id" : user.id,
-          "username": user.username,
-          "name": user.name,
-          "location": user.location,
-          "posts": getPostsByUser(user.id)
-      }
-    } catch (error){
-        throw(error);
+  let user = {};
+  try {
+    const userQueryResult = await client.query(
+      `SELECT * FROM users WHERE id=${userId};`
+    );
+    if (userQueryResult.rows.length) {
+      user = userQueryResult.rows[0];
+    } else {
+      return null;
     }
-}
+    const posts = await getPostsByUser(user.id);
 
+    return {
+      id: user.id,
+      username: user.username,
+      name: user.name,
+      location: user.location,
+      posts: posts,
+    };
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   client,
@@ -140,5 +147,5 @@ module.exports = {
   updatePost,
   getAllPosts,
   getPostsByUser,
-  getUserById
+  getUserById,
 };
