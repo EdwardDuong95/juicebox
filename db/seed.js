@@ -37,23 +37,23 @@ async function createInitialUsers() {
 async function createInitialPosts(){
   try {
     const [albert, sandra, glamgal] = await getAllUsers();
-
+    console.log(albert,"ALBERTALBERTALBERTALBERTALBERTALBERTALBERT", sandra)
     await createPost({
-      authorId: albert.id,
-      title: "First Post",
-      content: "This is my first post. I hope I love writing blogs as much as I love writing them."
+      "authorId": albert.id,
+      "title": "First Post",
+      "content": "This is my first post. I hope I love writing blogs as much as I love writing them."
     });
 
     await createPost({
-      authorId: sandra.id,
-      title: "Review",
-      content: "I didn't care for Albert's first post.  It was oddly phrased."
+      "authorId": sandra.id,
+      "title": "Review",
+      "content": "I didn't care for Albert's first post.  It was oddly phrased."
     });
 
     await createPost({
-      authorId: glamgal.id,
-      title: "First post by glamgal",
-      content: "This post is about glam stuff"
+      "authorId": glamgal.id,
+      "title": "First post by glamgal",
+      "content": "This post is about glam stuff"
     });
 
 
@@ -101,7 +101,12 @@ async function testDB() {
 async function dropTables() {
   try {
     console.log("Starting to drop tables...");
-    await client.query(`DROP TABLE IF EXISTS posts; DROP TABLE IF EXISTS users;`);
+    await client.query(`    
+    DROP TABLE IF EXISTS post_tags;
+    DROP TABLE IF EXISTS tags;
+    DROP TABLE IF EXISTS posts; 
+    DROP TABLE IF EXISTS users;`
+);
 
     console.log("Finished dropping tables!");
   } catch (error) {
@@ -128,7 +133,19 @@ async function createTables() {
         "authorId" INTEGER REFERENCES users(id) NOT NULL,
         title VARCHAR(255) NOT NULL,
         content TEXT NOT NULL,
-        active BOOLEAN DEFAULT true
+        active BOOLEAN DEFAULT true);`
+    );
+
+    await client.query(`CREATE TABLE tags(
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(255) UNIQUE NOT NULL
+    );`
+    );
+
+    await client.query(`CREATE TABLE post_tags(
+      "postId" INTEGER UNIQUE REFERENCES posts(id),
+      "tagId" INTEGER UNIQUE REFERENCES tags(id)
+
     );`
     );
 
