@@ -36,6 +36,7 @@ usersRouter.get('/', async (req, res) => {
         // create token & return to user
         const newToken = jwt.sign({ id:user.id, username:user.username }, process.env.JWT_SECRET)
         res.send({ token:newToken, message: "you're logged in!" });
+        console.log("the token inside the login post route is ", newToken)
       } else {
         next({ 
           name: 'IncorrectCredentialsError', 

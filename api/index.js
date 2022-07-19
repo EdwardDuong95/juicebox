@@ -8,9 +8,11 @@ const { getUserById } = require('../db');
 const { JWT_SECRET } = process.env;
 
 apiRouter.use((req, res, next) => {
+    console.log(req)
   if (req.user) {
     console.log("User is set:", req.user);
   }
+  else console.log("no user is set")
 
   next();
 });
