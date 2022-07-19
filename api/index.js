@@ -3,10 +3,17 @@ const apiRouter = express.Router();
 const usersRouter = require('./users');
 const postsRouter = require('./posts');
 const tagsRouter = require('./tags');
-
 const jwt = require('jsonwebtoken');
 const { getUserById } = require('../db');
 const { JWT_SECRET } = process.env;
+
+apiRouter.use((req, res, next) => {
+  if (req.user) {
+    console.log("User is set:", req.user);
+  }
+
+  next();
+});
 
 apiRouter.use(async (req, res, next) => {
     const prefix = 'Bearer ';
