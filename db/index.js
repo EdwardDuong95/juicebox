@@ -31,7 +31,7 @@ async function updateUser(id, fields = {}) {
   const setString = Object.keys(fields)
     .map((key, index) => `"${key}" =$${index + 1}`)
     .join(", ");
-
+console.log("Here is the setString in UpdateUser:",setString)
   if (setString.length === 0) {
     return;
   }
@@ -97,7 +97,7 @@ const selectValues = tagList.map(
   const selectQueryString = `SELECT * FROM tags
     WHERE name
     IN (${ selectValues });`
-    console.log(selectQueryString)
+
 
   try {
     // insert the tags, doing nothing on conflict
