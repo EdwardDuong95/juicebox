@@ -5,8 +5,9 @@ const apiRouter = require('./api');
 const morgan = require('morgan');
 const { client } = require('./db');
 
-server.use('/api', apiRouter);
+
 server.use(morgan('dev'));
+
 
 server.use(express.json())
 server.use((req, res, next) => {
@@ -17,7 +18,7 @@ server.use((req, res, next) => {
     next();
   });
 
-
+  server.use('/api', apiRouter);
   client.connect();
 
 server.listen(PORT, () => {
