@@ -5,10 +5,13 @@ const postsRouter = require('./posts');
 const tagsRouter = require('./tags');
 const jwt = require('jsonwebtoken');
 const { getUserById } = require('../db');
-const { JWT_SECRET } = process.env;
+require('dotenv').config();
+const { JWT_SECRET } = process.env
+
+
 
 apiRouter.use((req, res, next) => {
-    console.log(req)
+    // console.log(req)
   if (req.user) {
     console.log("User is set:", req.user);
   }
@@ -28,9 +31,11 @@ apiRouter.use(async (req, res, next) => {
   
       try {
         const { id } = jwt.verify(token, JWT_SECRET);
+        console.log(id, "THIS IS THE id FROM jwt.verify");
   
         if (id) {
           req.user = await getUserById(id);
+          console.log(req.user)
           next();
         }
       } catch ({ name, message }) {

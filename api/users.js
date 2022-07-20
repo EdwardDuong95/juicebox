@@ -34,7 +34,10 @@ usersRouter.get('/', async (req, res) => {
   
       if (user && user.password == password) {
         // create token & return to user
-        const newToken = jwt.sign({ id:user.id, username:user.username }, process.env.JWT_SECRET)
+        const newToken = jwt.sign({ 
+          id:user.id, 
+          username:user.username
+         }, process.env.JWT_SECRET, {expiresIn: '1w'})
         res.send({ token:newToken, message: "you're logged in!" });
         console.log("the token inside the login post route is ", newToken)
       } else {
