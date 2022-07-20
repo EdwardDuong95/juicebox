@@ -14,7 +14,10 @@ postsRouter.post('/', requireUser, async (req, res, next) => {
   }
 
   try {
-    const postData = {authorId: req.user.id, title, content}
+    // postData = {authorId: req.user.id, title, content}
+    postData.authorId = req.user.id;
+    postData.title = title;
+    postData.content=content;  
     const post = await createPost(postData)
     if (post){ res.send({ post })}
     else next({ name: "missing post", messasge: "failed to create post" })

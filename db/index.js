@@ -60,6 +60,7 @@ async function createPost({
   tags = [] // this is new
 }) {
   try {
+    console.log(tags, "tags")
     const { rows: [ post ] } = await client.query(`
       INSERT INTO posts("authorId", title, content) 
       VALUES($1, $2, $3)
@@ -68,6 +69,7 @@ async function createPost({
 
     const tagList = await createTags(tags);
 
+
     return await addTagsToPost(post.id, tagList);
   } catch (error) {
     throw error;
@@ -75,6 +77,7 @@ async function createPost({
 }
 
 async function createTags(tagList) {
+  
   if (tagList.length === 0) { 
     return; 
   }
