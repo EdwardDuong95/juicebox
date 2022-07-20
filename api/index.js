@@ -10,15 +10,7 @@ const { JWT_SECRET } = process.env
 
 
 
-apiRouter.use((req, res, next) => {
-    // console.log(req)
-  if (req.user) {
-    console.log("User is set:", req.user);
-  }
-  else console.log("no user is set")
 
-  next();
-});
 
 apiRouter.use(async (req, res, next) => {
     const prefix = 'Bearer ';
@@ -35,7 +27,6 @@ apiRouter.use(async (req, res, next) => {
   
         if (id) {
           req.user = await getUserById(id);
-          console.log(req.user)
           next();
         }
       } catch ({ name, message }) {
@@ -48,6 +39,16 @@ apiRouter.use(async (req, res, next) => {
       });
     }
   });
+
+  apiRouter.use((req, res, next) => {
+    console.log(req)
+  if (req.user) {
+    console.log("User is set:", req.user);
+  }
+  else console.log("no user is set")
+
+  next();
+});
 
 
 apiRouter.use ('/tags', tagsRouter);
