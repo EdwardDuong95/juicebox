@@ -10,7 +10,7 @@ async function createInitialUsers() {
       name: "Al Bert",
       location: "Sidney, Australia"
     });
-    console.log(albert)
+
 
     const sandra = await createUser({
         username: "sandra",
