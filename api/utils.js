@@ -1,14 +1,14 @@
-function requireUser(req, res, next) {
-    if (!req.user) {
+const { user } = require("pg/lib/defaults");
+
+  
+  function requireActiveUser(req, res, next){
+    if (!req.user || !req.user.active) {
       next({
-        name: "MissingUserError",
-        message: "You must be logged in to perform this action"
+        name: "NoActiveUserError",
+        message: "You must be an active user to perform this action"
       });
     }
-  
-    next();
   }
-  
-  module.exports = {
-    requireUser
+   module.exports = {
+    requireActiveUser
   }
