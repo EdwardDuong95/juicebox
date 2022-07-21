@@ -1,4 +1,4 @@
-const client = process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev');
+const client = process.env.DATABASE_URL || 'postgres://localhost:5432/juicebox-dev';
 const { user } = require("pg/lib/defaults");
 
 
