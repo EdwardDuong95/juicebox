@@ -12,9 +12,9 @@ tagsRouter.get("/:tagName/posts", async (req, res, next) => {
   try {
     // use our method to get posts by tag name from the db
     const allPosts = await getPostsByTagName(tagName);
-
+    console.log(allPosts[0])
     const posts = allPosts.filter((post) => {
-      return post.active || (req.user && post.author.id === req.user.id);
+      return ((post.active && post.author.active) || (req.user && post.author.id === req.user.id));
     });
 
     // send out an object to the client { posts: // the posts }

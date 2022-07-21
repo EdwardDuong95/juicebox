@@ -186,7 +186,7 @@ async function getPostById(postId) {
       rows: [author],
     } = await client.query(
       `
-      SELECT id, username, name, location
+      SELECT id, username, name, location, active
       FROM users
       WHERE id=$1;
     `,
@@ -304,7 +304,6 @@ async function getPostsByTagName(tagName) {
     `,
       [tagName]
     );
-
     return await Promise.all(postIds.map((post) => getPostById(post.id)));
   } catch (error) {
     throw error;
